@@ -207,8 +207,5 @@ cython_debug/
 learning-replay-main_lastrun.py
 learning-replay-main_legacy.psyexp
 learning-replay-localiser_lastrun.py
-learning-replay-localiser_lastrun.py
-learning-replay-localiser_lastrun.py
-learning-replay-localiser_lastrun.py
-*.psyexp
-*.py
+learning-replay-localiser_legacy.psyexp
+
