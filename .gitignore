@@ -19,12 +19,9 @@
 .xlsx
 /data 
 
-# python ad js versions of experiment
-.py
+# js versions of experiment
 .js
 
-# last run
-.psyexp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
