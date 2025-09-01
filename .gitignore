@@ -10,7 +10,6 @@
 /Experiment/data
 /Experiment/experiment_code_old
 /Experiment/image_generation
-/Experiment/learning-replay-MEG-task
 
 # datafiles
 .csv
