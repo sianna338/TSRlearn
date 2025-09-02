@@ -765,98 +765,29 @@ def get_best_timepoint(
     subj="",
     ms_per_point=10,
     return_preds=False,
+    proba=False
 ):
-    # assert (
-    #     len(set(np.bincount(data_y)).difference(set([0]))) == 1
-    # ), "WARNING not each class has the same number of examples"
-    # np.random.seed(get_id(subj))
-    # 'if len(set(np.bincount(data_y)).difference(set([0]))) != 1:
-    #     warnings.warn("WARNING not each class has the same number of examples")
-    # labels = np.unique(data_y)
-    # idxs_tuples = np.array([np.where(data_y == cond)[0] for cond in labels]).T
-    # idxs_tuples = [
-    #     idxs_tuples[i : i + ex_per_fold].ravel()
-    #     for i in range(0, len(idxs_tuples), ex_per_fold)
-    # ]
-
-    # time_max = data_x.shape[-1]  # 500 ms
-    # total = len(idxs_tuples)
-    # tqdm_loop = tqdm(total=total, desc=f"CV Fold {subj}", disable=not verbose)
-    # df = pd.DataFrame()
-
-    # all_preds = np.zeros([time_max, len(data_y)], dtype=int)
-
-    # for j, idxs in enumerate(idxs_tuples):
-    #     idxs_train = ~np.isin(range(data_x.shape[0]), idxs)
-    #     idxs_test = np.isin(range(data_x.shape[0]), idxs)
-    #     train_x = data_x[idxs_train]
-    #     train_y = data_y[idxs_train]
-    #     test_x = data_x[idxs_test]
-    #     test_y = data_y[idxs_test]
-
-    #     neg_x = np.hstack(train_x[:, :, 0:1].T).T if add_null_data else None
-    #     preds = Parallel(n_jobs=n_jobs)(
-    #         delayed(train_predict)(
-    #             train_x=train_x[:, :, start],
-    #             train_y=train_y,
-    #             test_x=test_x[:, :, start],
-    #             neg_x=neg_x,
-    #             clf=clf,
-    #             ova=ova,
-    #             proba=proba
-    #         )
-    #         for start in list(range(0, time_max))
-    #     )
-
-    #     all_preds[:, idxs_test] = np.array(preds)
-
-    #     # ---changed, return accuracy for each classifier seperately---- 
-    #     accuracies = np.array([pred == test_y for pred in preds]) # what is shape?
-    #     accuracy_mean = accuracies.mean(-1)
-
-    #     # reshape to 1D array of lists so that we can store in df
-    #     n_time, n_labels = accuracies.shape
-
-    #     # list, each value is one timepoint and contains list with decoding acc for all stimuli 
-    #     acc_hit_miss = [row.tolist() for row in accuracies]
-
-    #     df_temp = pd.DataFrame(
-    #         {
-    #             "timepoint": np.arange(
-    #                 -100, n_time * ms_per_point - 100, ms_per_point
-    #             ),
-    #             "fold": [j] * n_time,
-    #             "accuracy": acc_hit_miss,
-    #             "mean_accuracy": accuracy_mean,
-    #             "preds": preds,
-    #             "subject": [subj] * n_time
-    #         }
-    #     )
-    #     df = pd.concat([df, df_temp], ignore_index=True)
-    #     tqdm_loop.update()
-    # tqdm_loop.close()
-    # return (df, all_preds) if return_preds else df
-
-    if len(set(np.bincount(data_y)).difference(set([0]))) != 1:
-        warnings.warn("WARNING not each class has the same number of examples")
+    assert (
+        len(set(np.bincount(data_y)).difference(set([0]))) == 1
+    ), "WARNING not each class has the same number of examples"
+    #np.random.seed(get_id(subj))
+    
     labels = np.unique(data_y)
-    n_classes = len(labels)
-
     idxs_tuples = np.array([np.where(data_y == cond)[0] for cond in labels]).T
     idxs_tuples = [
         idxs_tuples[i : i + ex_per_fold].ravel()
         for i in range(0, len(idxs_tuples), ex_per_fold)
     ]
 
-    time_max = data_x.shape[-1]
+    time_max = data_x.shape[-1]  # 500 ms
     total = len(idxs_tuples)
     tqdm_loop = tqdm(total=total, desc=f"CV Fold {subj}", disable=not verbose)
     df = pd.DataFrame()
+    if proba:
+        all_preds = np.zeros([time_max, len(data_y), len(labels)], dtype=float)
+    else: 
+        all_preds = np.zeros([time_max, len(data_y)], dtype=int)
 
-    # preallocate predictions and probabilities 
-    all_probas = np.zeros([time_max, len(data_y), n_classes],  dtype=float)
-    all_preds = np.zeros([time_max, len(data_y)], dtype=int)
-    print("len of idxs_tuples", len(idxs_tuples))
     for j, idxs in enumerate(idxs_tuples):
         idxs_train = ~np.isin(range(data_x.shape[0]), idxs)
         idxs_test = np.isin(range(data_x.shape[0]), idxs)
@@ -866,8 +797,7 @@ def get_best_timepoint(
         test_y = data_y[idxs_test]
 
         neg_x = np.hstack(train_x[:, :, 0:1].T).T if add_null_data else None
-
-        preds_list = Parallel(n_jobs=n_jobs)(
+        preds = Parallel(n_jobs=n_jobs)(
             delayed(train_predict)(
                 train_x=train_x[:, :, start],
                 train_y=train_y,
@@ -875,47 +805,35 @@ def get_best_timepoint(
                 neg_x=neg_x,
                 clf=clf,
                 ova=ova,
-                proba=True
+                proba=proba
             )
-            for start in range(time_max)
+            for start in list(range(0, time_max))
         )
-        # preds_list is a list of arrays (len=time_max)
 
-        # stack along time axis -> (n_test, n_time, n_classes)
-        probs_fold = np.array(preds_list)
-        print("this is shape of preds_list: ", np.shape(preds_list))
-        print("this is how pred_list was stacked originally: ", np.shape(np.array(preds_list)))
+        if proba:
+            all_preds[:, idxs_test,:] = np.array(preds)
+        else: 
+             all_preds[:, idxs_test] = np.array(preds)
 
+        # ---changed, return accuracy for each classifier seperately---- 
+        accuracies = np.array([pred == test_y for pred in preds]) # what is shape?
+        accuracy_mean = accuracies.mean(-1)
 
-        # store probabilities into global array
-        all_probas[:, idxs_test, :] = probs_fold
-        print("shape of all_probas", np.shape(all_probas))
-
-        # labels = argmax over classes, map to label IDs if needed
-        # If your classes are already 0..K-1 matching columns, this is fine:
-        labels_fold = probs_fold.argmax(axis=-1)                      # (n_test, n_time)
-        all_preds[:, idxs_test] = labels_fold
-        print("shape of all_preds", np.shape(all_preds))
-
-        # accuracy per time (use fold labels vs true labels)
-        # accuracy per time (rows are timepoints, columns are test trials)
-        accuracies = (labels_fold == test_y[None, :])   # shape: (time_max, n_test)
-
-        # mean accuracy per timepoint
-        accuracy_mean = accuracies.mean(axis=1) 
-
-        df_temp = pd.DataFrame({
-            "timepoint": np.arange(-100, time_max * ms_per_point - 100, ms_per_point),
-            "fold": j,
-            "mean_accuracy": accuracy_mean,
-            "subject": subj,
-        })
+        df_temp = pd.DataFrame(
+            {
+                "timepoint": np.arange(
+                    -100, time_max * ms_per_point - 100, ms_per_point
+                ),
+                "fold": [j] * time_max,
+                "mean_accuracy": accuracy_mean,
+                "preds": preds,
+                "subject": [subj] * time_max
+            }
+        )
         df = pd.concat([df, df_temp], ignore_index=True)
         tqdm_loop.update()
-
     tqdm_loop.close()
-    return (df, all_preds,all_probas) if return_preds else df
-
+    return (df, all_preds) if return_preds else df
 
 
 def train_predict(
