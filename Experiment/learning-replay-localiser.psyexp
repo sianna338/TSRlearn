@@ -984,8 +984,8 @@
         <Param val="functions_imports" valType="code" updates="None" name="name"/>
       </CodeComponent>
       <CodeComponent name="exp_settings" plugin="None">
-        <Param val="&amp;#10;## all important task parameters to set ##&amp;#10;&amp;#10;# response prompt positions&amp;#10;possible_prompt_positions = [-0.2, 0.2] # x coordinates&amp;#10;&amp;#10;# duration of image presentation  [s]&amp;#10;image_dur = 1&amp;#10;&amp;#10;# image - word ISI: interval between image and word [s]&amp;#10;img_wrd_isi = 0&amp;#10;&amp;#10;# word presentation duration [s]&amp;#10;word_dur = 2&amp;#10;&amp;#10;# word - response prompt ISI [s]&amp;#10;wrd_resp_isi = 0&amp;#10;&amp;#10;# time to make response [s] &amp;#10;response_time = 2&amp;#10;&amp;#10;# left &amp; right response button presentation duration [s]&amp;#10;side_dur = 2&amp;#10;&amp;#10;# is there feedback or not&amp;#10;fdback = 1 # [0 = no, 1 = yes]&amp;#10;&amp;#10;# feedback duration [s]&amp;#10;fdback_dur = 0.2&amp;#10; &amp;#10;# duration of rest breaks [s]&amp;#10;break_dur = 30&amp;#10;&amp;#10;# interval of the breaks (every x trials)&amp;#10;break_interval = 70&amp;#10;total_block_number = 12&amp;#10;&amp;#10;# response - key mapping&amp;#10;left_key = 'g'&amp;#10;right_key = 'b'&amp;#10;possible_keys = [left_key, right_key]&amp;#10;&amp;#10;# language for instruction&amp;#10;language = 'english' # 'english' or 'german' &amp;#10;&amp;#10;# match /non-match responses or just non-match&amp;#10;match_responses = 1 # [no &quot;match&quot; responses = 0, &quot;match responses&quot; = 1]&amp;#10;&amp;#10;# switch sides for match / non match mapping&amp;#10;switch_sides = 1 # [no = 0, yes = 1]" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="possible_prompt_positions = [(- 0.2), 0.2];&amp;#10;image_dur = 1;&amp;#10;img_wrd_isi = 0;&amp;#10;word_dur = 2;&amp;#10;wrd_resp_isi = 0;&amp;#10;response_time = 2;&amp;#10;side_dur = 2;&amp;#10;fdback = 1;&amp;#10;fdback_dur = 0.2;&amp;#10;break_dur = 30;&amp;#10;break_interval = 70;&amp;#10;total_block_number = 12;&amp;#10;left_key = &quot;g&quot;;&amp;#10;right_key = &quot;b&quot;;&amp;#10;possible_keys = [left_key, right_key];&amp;#10;language = &quot;english&quot;;&amp;#10;match_responses = 1;&amp;#10;switch_sides = 1;&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="&amp;#10;## all important task parameters to set ##&amp;#10;&amp;#10;# response prompt positions&amp;#10;possible_prompt_positions = [-0.22, 0.22] # x coordinates&amp;#10;&amp;#10;# duration of image presentation  [s]&amp;#10;image_dur = 1&amp;#10;&amp;#10;# image - word ISI: interval between image and word [s]&amp;#10;img_wrd_isi = 0&amp;#10;&amp;#10;# word presentation duration [s]&amp;#10;word_dur = 2&amp;#10;&amp;#10;# word - response prompt ISI [s]&amp;#10;wrd_resp_isi = 0&amp;#10;&amp;#10;# time to make response [s] &amp;#10;response_time = 2&amp;#10;&amp;#10;# left &amp; right response button presentation duration [s]&amp;#10;side_dur = 2&amp;#10;&amp;#10;# is there feedback or not&amp;#10;fdback = 1 # [0 = no, 1 = yes]&amp;#10;&amp;#10;# feedback duration [s]&amp;#10;fdback_dur = 0.2&amp;#10; &amp;#10;# duration of rest breaks [s]&amp;#10;break_dur = 30&amp;#10;&amp;#10;# interval of the breaks (every x trials)&amp;#10;break_interval = 70&amp;#10;total_block_number = 12&amp;#10;&amp;#10;# response - key mapping&amp;#10;left_key = 'g'&amp;#10;right_key = 'b'&amp;#10;possible_keys = [left_key, right_key]&amp;#10;&amp;#10;# language for instruction&amp;#10;language = 'german' # 'english' or 'german' &amp;#10;&amp;#10;# match /non-match responses or just non-match&amp;#10;match_responses = 1 # [no &quot;match&quot; responses = 0, &quot;match responses&quot; = 1]&amp;#10;&amp;#10;# switch sides for match / non match mapping&amp;#10;switch_sides = 1 # [no = 0, yes = 1]" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="possible_prompt_positions = [(- 0.22), 0.22];&amp;#10;image_dur = 1;&amp;#10;img_wrd_isi = 0;&amp;#10;word_dur = 2;&amp;#10;wrd_resp_isi = 0;&amp;#10;response_time = 2;&amp;#10;side_dur = 2;&amp;#10;fdback = 1;&amp;#10;fdback_dur = 0.2;&amp;#10;break_dur = 30;&amp;#10;break_interval = 70;&amp;#10;total_block_number = 12;&amp;#10;left_key = &quot;g&quot;;&amp;#10;right_key = &quot;b&quot;;&amp;#10;possible_keys = [left_key, right_key];&amp;#10;language = &quot;german&quot;;&amp;#10;match_responses = 1;&amp;#10;switch_sides = 1;&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
@@ -1864,6 +1864,23 @@
         <Param val="" valType="code" updates="None" name="validator"/>
         <Param val="" valType="num" updates="constant" name="wrapWidth"/>
       </TextComponent>
+      <CodeComponent name="set_break_instruction_text" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="if ((language === &quot;english&quot;)) {&amp;#10;    breaks_instruction.text = &quot;Break, the task will continue soon.&quot;;&amp;#10;} else {&amp;#10;    if ((language === &quot;german&quot;)) {&amp;#10;        breaks_instruction.text = &quot;Pause, die Aufgabe geht gleich weiter.&quot;;&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="&amp;#10;if language==&quot;english&quot;:&amp;#10;    breaks_instruction.text = (&amp;#10;    &quot;Break, the task will continue soon.&quot;)&amp;#10;elif language==&quot;german&quot;:&amp;#10;     breaks_instruction.text =(&amp;#10;    &quot;Pause, die Aufgabe geht gleich weiter.&quot;)&amp;#10;    &amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="set_break_instruction_text" valType="code" updates="None" name="name"/>
+      </CodeComponent>
       <TextComponent name="progress_update" plugin="None">
         <Param val="white" valType="color" updates="constant" name="color"/>
         <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
@@ -1896,8 +1913,8 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="if ((language === &quot;english&quot;)) {&amp;#10;    progress_update.text = `You have completed ${block_num} out of ${total_block_number} blocks.`;&amp;#10;} else {&amp;#10;    if ((language === &quot;german&quot;)) {&amp;#10;        progress_update.text = `Sie haben ${block_num} von insgesamt ${total_block_number} Blöcken abgeschlossen.`;&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="&amp;#10;if language==&quot;english&quot;: &amp;#10;    progress_update.text = (&amp;#10;    f&quot;You have completed {block_num} out of &quot;&amp;#10;    f&quot;{total_block_number} blocks.&quot;)&amp;#10;elif language==&quot;german&quot;:&amp;#10;    progress_update.text = (&amp;#10;    f&quot;Sie haben {block_num} von insgesamt &quot;&amp;#10;    f&quot;{total_block_number} Blöcken abgeschlossen.&quot;)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="if ((language === &quot;english&quot;)) {&amp;#10;    progress_update.text = `You have completed ${block_num} out of ${total_block_number} blocks.`;&amp;#10;} else {&amp;#10;    if ((language === &quot;german&quot;)) {&amp;#10;        progress_update.text = `Sie haben ${block_num} von ${total_block_number} Blöcken abgeschlossen.`;&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="&amp;#10;if language==&quot;english&quot;: &amp;#10;    progress_update.text = (&amp;#10;    f&quot;You have completed {block_num} out of &quot;&amp;#10;    f&quot;{total_block_number} blocks.&quot;)&amp;#10;elif language==&quot;german&quot;:&amp;#10;    progress_update.text = (&amp;#10;    f&quot;Sie haben {block_num} von &quot;&amp;#10;    f&quot;{total_block_number} Blöcken abgeschlossen.&quot;)" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
@@ -1951,23 +1968,6 @@
         <Param val="height" valType="str" updates="None" name="units"/>
         <Param val="" valType="code" updates="None" name="validator"/>
       </ProgressComponent>
-      <CodeComponent name="set_break_instruction_text" plugin="None">
-        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="if ((language === &quot;english&quot;)) {&amp;#10;    breaks_instruction.text(&quot;Break, the task will continue soon.&quot;);&amp;#10;} else {&amp;#10;    if ((language === &quot;german&quot;)) {&amp;#10;        breaks_instruction.text(&quot;Pause, die Aufgabe geht gleich weiter.&quot;);&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="&amp;#10;if language==&quot;english&quot;:&amp;#10;    breaks_instruction.text(&amp;#10;    &quot;Break, the task will continue soon.&quot;)&amp;#10;elif language==&quot;german&quot;:&amp;#10;     breaks_instruction.text(&amp;#10;    &quot;Pause, die Aufgabe geht gleich weiter.&quot;)" valType="extendedCode" updates="constant" name="Begin Routine"/>
-        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="set_break_instruction_text" valType="code" updates="None" name="name"/>
-      </CodeComponent>
     </Routine>
   </Routines>
   <Flow>
