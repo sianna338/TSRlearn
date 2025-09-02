@@ -1099,7 +1099,7 @@
         <Param val="0" valType="num" updates="constant" name="ori"/>
         <Param val="prompt_pos" valType="list" updates="set every repeat" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="(0.3,0.2)" valType="list" updates="constant" name="size"/>
+        <Param val="(0.25,0.25)" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
@@ -1128,7 +1128,7 @@
         <Param val="0" valType="num" updates="constant" name="ori"/>
         <Param val="resolve_pos(dist01_pos)" valType="list" updates="set every repeat" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="(0.3,0.2)" valType="list" updates="constant" name="size"/>
+        <Param val="(0.25,0.25)" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
@@ -1157,7 +1157,7 @@
         <Param val="0" valType="num" updates="constant" name="ori"/>
         <Param val="resolve_pos(dist02_pos)" valType="list" updates="set every repeat" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="(0.3,0.2)" valType="list" updates="constant" name="size"/>
+        <Param val="(0.25,0.25)" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
@@ -1186,7 +1186,7 @@
         <Param val="0" valType="num" updates="constant" name="ori"/>
         <Param val="resolve_pos(correct_pos)" valType="list" updates="set every repeat" name="pos"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="(0.3,0.2)" valType="list" updates="constant" name="size"/>
+        <Param val="(0.25,0.25)" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
