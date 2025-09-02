@@ -816,6 +816,12 @@ def get_best_timepoint(
              all_preds[:, idxs_test] = np.array(preds)
 
         # ---changed, return accuracy for each classifier seperately---- 
+
+        if proba: 
+            probs_fold = np.stack(preds, axis=0)
+            # get predicted class labels (time_max, n_test)
+            preds = probs_fold.argmax(axis=-1)
+
         accuracies = np.array([pred == test_y for pred in preds]) # what is shape?
         accuracy_mean = accuracies.mean(-1)
 
@@ -826,7 +832,6 @@ def get_best_timepoint(
                 ),
                 "fold": [j] * time_max,
                 "mean_accuracy": accuracy_mean,
-                "preds": preds,
                 "subject": [subj] * time_max
             }
         )
