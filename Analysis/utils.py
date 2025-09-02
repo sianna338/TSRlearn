@@ -898,16 +898,17 @@ def get_best_timepoint(
         print("shape of all_preds", np.shape(all_preds))
 
         # accuracy per time (use fold labels vs true labels)
-        accuracies = np.array([pred == test_y for pred in labels_fold])
-        #accuracies = (labels_fold == test_y[:, None])                 # (n_test, n_time)
-        accuracy_mean = accuracies.mean(axis=0)                       # (n_time,)
+        # accuracy per time (rows are timepoints, columns are test trials)
+        accuracies = (labels_fold == test_y[None, :])   # shape: (time_max, n_test)
+
+        # mean accuracy per timepoint
+        accuracy_mean = accuracies.mean(axis=1) 
 
         df_temp = pd.DataFrame({
             "timepoint": np.arange(-100, time_max * ms_per_point - 100, ms_per_point),
             "fold": j,
             "mean_accuracy": accuracy_mean,
             "subject": subj,
-            "preds": all_preds,
         })
         df = pd.concat([df, df_temp], ignore_index=True)
         tqdm_loop.update()
