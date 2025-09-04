@@ -31,6 +31,9 @@ from joblib import Memory, Parallel, delayed
 import mne.stats as stats 
 import pickle
 import scipy
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import random 
+import itertools
 
 # %%
 # analysis settings
@@ -41,7 +44,7 @@ subject_list = [subject_name]
 
 data_path = os.path.join(data_filepath + subject_name)
 
-ex_per_fold = 1
+ex_per_fold = 2
 
 clf_params = {
     "C": 1 / 0.006,
@@ -63,13 +66,13 @@ colors_list = ["#54478c","#2c699a","#048ba8","#0db39e","#16db93","#83e377","#b9e
 
 
 # %% [markdown]
+# load the pre-processed and segmented data
+
+# %% [markdown]
 # Procedure
 # 1. Train and test on all possible timepoint combinations (with get_best_timepoint, leave one out)
 # 2. find the best timepoint for localiser training
 # 3. plot timecourse of decoding accuracy (averaged across concept-decoders)
-
-# %% [markdown]
-# load the pre-processed and segmented data
 
 # %%
 all_files = os.listdir(data_path)
@@ -108,18 +111,33 @@ data_x = np.hstack((grad_rescaled, mag_rescaled))
 # %%
 ## Calculation of best timepoint and leave-one-out cross-validation
 res = utils.get_best_timepoint(
-       data_x, data_y, clf=clf, subj=subject_name, ex_per_fold=ex_per_fold,
+       data_x, data_y, clf=clf, 
+       subj=subject_name, ex_per_fold=ex_per_fold,
        return_preds=True
    )
 
 df_out=res[0]
+preds = res[1]
+
+# save
+# with open("res_pilot1.pkl", "wb") as f:
+#    pickle.dump(res, f)
+
+# %%
+# # load pickle 
+# file = open("res_pilot1.pkl",'rb')
+# res = pickle.load(file)
+# file.close()
+
+#df_out=res[0]
+#preds = res[1]
 
 # %%
 
 # mean across folds at each timepoint
 g = df_out.groupby("timepoint", sort=True)["mean_accuracy"]
 curve_mean = g.mean()
-curve_ci   = 1.96 * g.std(ddof=1) / np.sqrt(g.count())  # optional for CI
+# curve_ci   = 1.96 * g.std(ddof=1) / np.sqrt(g.count())  
 
 peak_time = curve_mean.idxmax()
 peak_acc  = curve_mean.max()
@@ -135,23 +153,179 @@ sns.despine()
 
 
 utils.plot_decoding_accuracy(
-    df_out, x="timepoint", y="mean_accuracy", ax=ax, color=colors_list[2]
+    df_out, x="timepoint", y="mean_accuracy", ax=ax, color=colors_list[2],
+    chance=(1/len(concepts))
 )
 ax.set(
     xlabel="ms relative to stimulus onset",
     ylabel="accuracy",
-    title=f"Classifier accuracy for all concepts",
+    title="Classifier accuracy for all concepts",
 )
 ax.set_ylim(0, 0.1)
 ax.set_yticks([0, 0.025, 0.05, 0.075,0.1])
-# draw the band at the correct place
+
+# highlight peak decoding time
 ax.axvspan(peak_time - 5, peak_time + 5, alpha=0.3, color="orange")
 
 ax.legend(["accuracy", "95% conf.", "chance", "peak"], loc="lower right")
 
 plt.tight_layout()
 plt.pause(0.1)
-fig.savefig(f"decoding_accuracy_pilot1.png", bbox_inches="tight")
+#fig.savefig(f"decoding_accuracy_pilot1.png", bbox_inches="tight")
+
+# %% [markdown]
+# Repeat same analysis but exclude faces
+
+# %%
+face_idx = concepts.index("face")  
+face_number = face_idx+1
+facetrials_idx = data_y==face_number
+
+data_x_noface = data_x[~facetrials_idx]
+data_y_noface = data_y[~facetrials_idx]
+
+# run classifcation on subset with no faces 
+res = utils.get_best_timepoint(
+    data_x_noface,
+    data_y_noface,
+    clf=clf,
+    subj=subject_name,
+    ex_per_fold=ex_per_fold,
+    return_preds=True
+)
+
+df_out, preds = res
+
+
+# %%
+g = df_out.groupby("timepoint", sort=True)["mean_accuracy"]
+curve_mean = g.mean()
+# curve_ci   = 1.96 * g.std(ddof=1) / np.sqrt(g.count())  
+
+peak_time = curve_mean.idxmax()
+peak_acc  = curve_mean.max()
+
+print("Peak (averaged) accuracy:", peak_acc)
+print("Peak time (ms):", peak_time)
+
+
+# plot predictions over time: one subplot per classifier 
+fig = plt.figure(figsize=(8,5))
+ax = fig.subplots()
+sns.despine()
+
+
+utils.plot_decoding_accuracy(
+    df_out, x="timepoint", y="mean_accuracy", ax=ax, color=colors_list[2],
+    chance=(1/(len(concepts)-1))
+)
+ax.set(
+    xlabel="ms relative to stimulus onset",
+    ylabel="accuracy",
+    title="Classifier accuracy for all concepts except for faces",
+)
+ax.set_ylim(0, 0.1)
+ax.set_yticks([0, 0.025, 0.05, 0.075,0.1])
+
+# highlight peak decoding time
+ax.axvspan(peak_time - 5, peak_time + 5, alpha=0.3, color="orange")
+
+ax.legend(["accuracy", "95% conf.", "chance", "peak"], loc="lower right")
+
+plt.tight_layout()
+plt.pause(0.1)
+fig.savefig(f"decoding_accuracy_nofaces_pilot1.png", bbox_inches="tight")
+
+# %% [markdown]
+# Iteratively select more concepts and see how decoding probability changes 
+
+# %%
+
+repetitions = 5
+accuracies_sets = np.zeros((20))
+setsizes = range(2,22)
+labels = np.unique(data_y)  
+
+for setidx, setsize in enumerate(setsizes):
+
+    max_acc_list =  []
+
+    # all possible concept subsets of this size
+    all_combos = list(itertools.combinations(labels, setsize))
+
+    # pick random combos without replacement
+    chosen_combos = random.sample(all_combos, k=repetitions)
+
+    for Subset in chosen_combos:  
+              
+        label_mask = np.isin(data_y, Subset)
+        # shape (840,), boolean
+ 
+        train_x = data_x[label_mask]
+        train_y = data_y[label_mask]
+        res = utils.get_best_timepoint(
+            train_x, train_y, clf=clf, subj=subject_name, ex_per_fold=ex_per_fold,
+            return_preds=False, proba=False)
+        
+        g = res.groupby("timepoint", sort=True)["mean_accuracy"]
+        curve_mean = g.mean()
+        # average over folds first 
+
+        max_acc = curve_mean.max()
+        max_acc_list.append(max_acc)
+
+    accuracies_sets[setidx] = np.mean(max_acc_list)
+    print(f"max accuracy for subset {Subset}: {accuracies_sets[setidx]}")
+
+
+# %%
+# plot
+plt.title("Max accuracy for decoding with increasing number of concepts")
+plt.xlabel("number of concepts")
+plt.ylabel("mac accuracy across all folds")
+plt.plot(setsizes, accuracies_sets)
+
+# %% [markdown]
+# Confusion Matrix
+
+# %%
+# create confusion matrices
+
+# select predictions from the timepoint with highest accuracy across all concepts 
+peak_idx = curve_mean.argmax()
+preds_max_time = preds[:,peak_idx]
+
+# create matrix
+cm = confusion_matrix(data_y, preds_max_time, labels=np.unique(data_y), normalize="true")
+
+n_classes = len(concepts)
+
+# initialise arrays to store tp, fp, tn and fn for each class seperately 
+TP = np.zeros(n_classes, dtype=int)
+FP = np.zeros(n_classes, dtype=int)
+FN = np.zeros(n_classes, dtype=int)
+TN = np.zeros(n_classes, dtype=int)
+
+for k in range(n_classes):
+
+    # TPs are on diagonal
+    TP[k] = cm[k, k]
+
+    # How many off-diagonals for k
+    FP[k] = cm[:, k].sum() - TP[k]
+    FN[k] = cm[k, :].sum() - TP[k]
+
+    # TN is everything that stays left over 
+    TN[k] = cm.sum() - (TP[k] + FP[k] + FN[k])
+
+# %%
+# plot overall confusion matrix
+fig, ax = plt.subplots(figsize=(10, 5))
+disp = ConfusionMatrixDisplay(cm, display_labels=concepts)
+disp.plot(ax=ax, include_values=False)
+
+ax.tick_params(axis='x', labelrotation=90)
+ax.set_title("Confusion matrix: classification of different concepts vs. true concept")
 
 # %% [markdown]
 # Count how many times correct classification occured for each concept
@@ -183,8 +357,6 @@ per_label_acc = num_correct_labtr / denom_ntrials
 
 # %%
    
-# start plotting of mean decoding accuracy
-
 # plot predictions over time: one subplot per classifier 
 fig = plt.figure(figsize=(12, 14), constrained_layout=True)
 ax = fig.subplots(7,3)
@@ -209,25 +381,80 @@ plt.show()
 fig.savefig(f"decoding_predictions_pilot1_seperate.png", bbox_inches="tight")
 
 # %% [markdown]
+# Plot probabilities for the right class on trials with this class vs. mean prob of other classes
+
+# %%
+labels = np.unique(data_y)
+
+# get dict to match labels to indices
+label_to_idx = {lab: i for i, lab in enumerate(labels)}
+
+# look up where labels and their index show up in data_y (true labels)
+true_idx = np.vectorize(label_to_idx.get)(data_y)  # (n_trials,)
+
+# probas should be shape n_trials x n_timepoints x n_classes
+n_trials, n_time, n_classes = preds_proba.shape
+
+# probability of the true class for each trial × time combination 
+p_true = preds_proba[np.arange(n_trials)[:, None], np.arange(n_time)[None, :], true_idx[:, None]]
+
+# average probability of all other classes (3rd dimension of proba)
+
+# take mean here! 
+p_other = (preds_proba.sum(axis=2)[:, :] - p_true) / (n_classes - 1)
+
+# average within each class
+per_class_contrast = []
+for lab in labels:
+    mask = data_y == lab
+    # contrast = p_true - p_other, averaged over trials
+    contrast = (p_true[mask] - p_other[mask]).mean(axis=0)  # (n_time,)
+    per_class_contrast.append(contrast)
+
+per_class_contrast = np.vstack(per_class_contrast)  # (n_classes, n_time)
+
+# %%
+# plot seperability of one class from the other classes over time
+time_vector = np.linspace(-100, 500, 7)
+
+fig, ax = plt.subplots(figsize=(9, 6))
+im = ax.imshow(per_class_contrast, aspect='auto', origin='lower',
+               cmap='RdBu_r', vmin=-0.1, vmax=0.1,
+               extent=[time_vector[0], time_vector[-1], 0, len(labels)])  
+
+ax.set_yticks(np.arange(len(concepts)) + 0.5)
+ax.set_yticklabels(concepts)
+
+ax.set_xticklabels(time_vector)
+ax.set_xlabel("Time (ms relative to image presentation)")
+ax.set_ylabel("Concept")
+ax.set_title('Decodability (probability) of presented concept vs. all the other concepts')
+cbar = plt.colorbar(im, ax=ax, label="p_true - p_other")
+plt.tight_layout()
+plt.show()
+
+fig.savefig("localiser_prob_seperability_pilot1.png")
+
+# %% [markdown]
 # Cool heatmap
 
 # %%
 # limit time win around stim onset in data_x so it doesn't run forever
-data_x_new = data_x[:, :, 11:31] # from 0 to 200 ms after stim 
-len_times = 20
-ms_start = 0
-ms_end = 200
+data_x_new = data_x[:, :, 15:45] # from 50 to 350 ms after stim 
+len_times = 30
+ms_start = 50
+ms_end = 350
 
 # %%
 ## plot heatmap for decoding accuracy for each train and test timepoint combination
 
 # calculate time by time decoding heatmap from localizer
 # basically: How well can a clf trained on t1 predict t2 of the localizer
-# maps_localizer = utils.get_decoding_heatmap(clf, data_x_new, data_y, ex_per_fold=ex_per_fold)
+maps_localizer = utils.get_decoding_heatmap(clf, data_x_new, data_y, ex_per_fold=ex_per_fold)
 
-# # save
-# with open("heatmap_results_pilot1.pkl", "wb") as f:
-#     pickle.dump(maps_localizer, f)
+# save
+with open("heatmap_results_longertime_pilot1.pkl", "wb") as f:
+    pickle.dump(maps_localizer, f)
 
 heatmap_matrix = maps_localizer[1]
 results = maps_localizer[0]
