@@ -20,8 +20,8 @@ concepts = [
     "bug","berry","bicycle","bird","box","car","chair","coffee","dog","face","fish",
     "guitar","hammer","hand","house","jacket","pencil","phone","pizza","plane","tree"
 ]
-left_key = "y" # key to choose the option presented on the left 
-right_key = "r"
+left_key = "g" # key to choose the option presented on the left 
+right_key = "b"
 screen_positions = ["left", "right"] # positions on the screen with response options 
 
 
@@ -302,7 +302,7 @@ if __name__ == "__main__":
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--n_participants", type=int, default=30)
-    ap.add_argument("--out_dir", default = r"c:\sync_folder\Study 1 - MEG replay\Experiment\learning-replay-MEG-task\sequences")  
+    ap.add_argument("--out_dir", default = r"c:\sync_folder\TSRlearn\Experiment\sequences") 
     args = ap.parse_args()
 
     base_name = "localiser_conditions"
